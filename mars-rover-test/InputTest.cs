@@ -65,10 +65,10 @@ public class InputTest
     {
         //Arrange
         string input = "2 5";
-        var expectedResult = new PlateauSize(2, 5);
+        var expectedResult = new Grid(2, 5);
 
         //Act
-        bool isSuccess = Input.TryParsePlateauSize(input, out PlateauSize result);
+        bool isSuccess = Input.TryParsePlateauSize(input, out Grid result);
 
         //Assert
         isSuccess.Should().BeTrue();
@@ -86,7 +86,7 @@ public class InputTest
         //Arrange
 
         //Act
-        bool result = Input.TryParsePlateauSize(input, out PlateauSize p);
+        bool result = Input.TryParsePlateauSize(input, out Grid p);
 
         //Assert
         result.Should().BeFalse();
@@ -165,7 +165,7 @@ public class InputTest
         //Arrange
 
         //Act
-        bool isSuccess = Input.TryParseInput(input, out ParsedInput p);
+        bool isSuccess = Input.TryParseInstructions(input, out Instruction[] i);
 
         //Assert
         isSuccess.Should().BeFalse();

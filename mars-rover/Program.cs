@@ -10,7 +10,7 @@ internal class Program
         //Prompt user to input plateau size
         Console.WriteLine("Welcome to Mars Rover!");
         string plateauInput;
-        PlateauSize plateau;
+        Grid plateau;
         do
         {
             plateauInput = Input.GetInput("Enter plateau size (e.g. 5 5): ");
@@ -27,7 +27,7 @@ internal class Program
         }
         while (!Input.TryParsePosition(positionInput, out position));
         Console.WriteLine("Delivering rover to starting position...SUCCESS");
-        Rover rover = new Rover(position);
+        Rover rover = new Rover(position, plateau);
 
         //Prompt user for instructions
         string instructionsInput;
@@ -37,7 +37,8 @@ internal class Program
             instructionsInput = Input.GetInput("Enter rover instructions (e.g. LMMRMMR: ");
         } 
         while (!Input.TryParseInstructions(instructionsInput, out instructions));
-        rover.PerformInstructions(instructions);
+        if(rover.PerformInstructions(instructions))
         Console.WriteLine("Performing instructions... SUCCESS");
+        else Console.WriteLine("Performing instructions... FAILED");
     }
 }

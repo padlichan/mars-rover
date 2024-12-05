@@ -14,18 +14,6 @@ public static class Input
         return input;
     }
 
-    public static bool TryParseInput(string input, out ParsedInput parsedInput)
-    {
-        string[] inputArray = input.Split(' ');
-        bool isInstrucitons = TryParseInstructions(input, out Instruction[]? instructions);
-        bool isPosition = TryParsePosition(input, out Position? position);
-        bool isPlateauSize = TryParsePlateauSize(input, out PlateauSize? plateauSize);
-
-        parsedInput = new ParsedInput(instructions, position, plateauSize);
-
-        return isInstrucitons || isPosition || isPlateauSize;
-    }
-
     public static bool TryParseInstructions(string input, out Instruction[] instructions)
     {
         instructions = new Instruction[0];
@@ -69,7 +57,7 @@ public static class Input
         return true;
     }
 
-    public static bool TryParsePlateauSize(string input, out PlateauSize plateauSize)
+    public static bool TryParsePlateauSize(string input, out Grid plateauSize)
     {
         string[] inputArray = input.Split(' ');
         plateauSize = new(0,0);
@@ -77,7 +65,7 @@ public static class Input
         if (!int.TryParse(inputArray[0], out int length)) return false;
         if (!int.TryParse(inputArray[1], out int width)) return false;
         if (length < 1 || width < 1) return false;
-        plateauSize = new PlateauSize(length, width);
+        plateauSize = new Grid(length, width);
         return true;
     }
 
@@ -117,19 +105,12 @@ public enum CardinalDirection
 public class Position(int x, int y, CardinalDirection direction)
 {
     public int X { get; set; } = x;
-    public int y { get; set; } = y;
+    public int Y { get; set; } = y;
     public CardinalDirection Facing { get; set; } = direction;
 }
 
-public class PlateauSize(int length, int width)
+public class Grid(int length, int width)
 {
     public int Length { get; init; } = length;
     public int Width { get; init; } = width;
-}
-
-public class ParsedInput(Instruction[]? instructions, Position? position, PlateauSize? plateauSize)
-{
-    public Instruction[]? Instructions { get; set; } = instructions;
-    public Position? Position { get; set; } = position;
-    public PlateauSize? PlateauSize { get; set; } = plateauSize;
 }

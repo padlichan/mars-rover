@@ -1,69 +1,81 @@
 ﻿using mars_rover.InputHandlers;
+using System.ComponentModel.Design;
 namespace mars_rover.RoverHandlers;
 
-public class Rover(Position startingPosition)
+public class Rover(Position startingPosition, Grid grid)
 {
 
-    public Position Position { get; private set; } = startingPosition;
+    public Position CurrentPosition { get; private set; } = startingPosition;
+    private Grid Grid { get; set; } = grid;
 
-    public void PerformInstructions(Instruction[] instructions)
+    public bool PerformInstructions(Instruction[] instructions)
     {
         foreach (Instruction instruction in instructions)
         {
-            if (instruction == Instruction.Move) Move();
+            if (instruction == Instruction.Move)
+            {
+                Position nextPosition = MoveForward(CurrentPosition);
+                if (CheckPosition(nextPosition)) CurrentPosition = nextPosition;
+                else return false;            
+            }
             else if (instruction == Instruction.TurnLeft || instruction == Instruction.TurnRight) Turn(instruction);
         }
 
         Console.WriteLine("Current position: " + GetCurrentPosition());
+        return true;
     }
-    public void Turn(Instruction instruction)
+    private void Turn(Instruction instruction)
     {
-        switch (Position.Facing)
+        switch (CurrentPosition.Facing)
         {
             case CardinalDirection.North:
-                if (instruction == Instruction.TurnLeft) Position.Facing = CardinalDirection.West;
-                else Position.Facing = CardinalDirection.East;
+                if (instruction == Instruction.TurnLeft) CurrentPosition.Facing = CardinalDirection.West;
+                else CurrentPosition.Facing = CardinalDirection.East;
                 break;
             case CardinalDirection.East:
-                if (instruction == Instruction.TurnLeft) Position.Facing = CardinalDirection.North;
-                else Position.Facing = CardinalDirection.South;
+                if (instruction == Instruction.TurnLeft) CurrentPosition.Facing = CardinalDirection.North;
+                else CurrentPosition.Facing = CardinalDirection.South;
                 break;
             case CardinalDirection.South:
-                if (instruction == Instruction.TurnLeft) Position.Facing = CardinalDirection.East;
-                else Position.Facing = CardinalDirection.West;
+                if (instruction == Instruction.TurnLeft) CurrentPosition.Facing = CardinalDirection.East;
+                else CurrentPosition.Facing = CardinalDirection.West;
                 break;
             case CardinalDirection.West:
-                if (instruction == Instruction.TurnLeft) Position.Facing = CardinalDirection.South;
-                else Position.Facing = CardinalDirection.North;
+                if (instruction == Instruction.TurnLeft) CurrentPosition.Facing = CardinalDirection.South;
+                else CurrentPosition.Facing = CardinalDirection.North;
                 break;
         }
     }
 
-    public void Move()
+    private bool CheckPosition(Position position)
     {
-        switch (Position.Facing)
+        if (position.X < 0 || position.X > Grid.Width || position.Y < 0 || position.Y > Grid.Length) return false;
+        return true;
+    }
+
+    private Position MoveForward(Position position)
+    {
+        switch (position.Facing)
         {
             case CardinalDirection.North:
-                if(canMove()) Position.y++;
+                position.Y++;
                 break;
+
             case CardinalDirection.South:
-                if (canMove()) Position.y--;
+                position.Y--;
                 break;
+
             case CardinalDirection.East:
-                if (canMove()) Position.X++;
+                position.X++;
                 break;
+
             case CardinalDirection.West:
-                if (canMove()) Position.X--;
+                position.X--;
                 break;
-        };
+        }; return position;
     }
     public string GetCurrentPosition()
     {
-        return $"{Position.X} {Position.y} {Position.Facing}";
-    }
-
-    private bool canMove()
-    {
-        return true;
+        return $"{CurrentPosition.X} {CurrentPosition.Y} {CurrentPosition.Facing}";
     }
 }
