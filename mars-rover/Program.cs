@@ -7,6 +7,7 @@ internal class Program
 {
     static void Main(string[] args)
     {
+        List<Rover> rovers =  new List<Rover>();
         //Prompt user to input plateau size
         Console.WriteLine("Welcome to Mars Rover!");
         string plateauInput;
@@ -28,17 +29,23 @@ internal class Program
         while (!Input.TryParsePosition(positionInput, out position));
         Console.WriteLine("Delivering rover to starting position...SUCCESS");
         Rover rover = new Rover(position, plateau);
+        rover.DrawRover();
 
         //Prompt user for instructions
-        string instructionsInput;
-        Instruction[] instructions;
         do
         {
-            instructionsInput = Input.GetInput("Enter rover instructions (e.g. LMMRMMR: ");
-        } 
-        while (!Input.TryParseInstructions(instructionsInput, out instructions));
-        if(rover.PerformInstructions(instructions))
-        Console.WriteLine("Performing instructions... SUCCESS");
-        else Console.WriteLine("Performing instructions... FAILED");
+            string instructionsInput;
+            Instruction[] instructions;
+            do
+            {
+                instructionsInput = Input.GetInput("Enter rover instructions (e.g. LMMRMMR) OR Quit (Q): ");
+                if (instructionsInput == "Q") return;
+            }
+            while (!Input.TryParseInstructions(instructionsInput, out instructions));
+            if (rover.PerformInstructions(instructions))
+                Console.WriteLine("Performing instructions... SUCCESS");
+            else Console.WriteLine("Performing instructions... FAILED");
+        }
+        while (true);
     }
 }
