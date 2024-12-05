@@ -1,14 +1,13 @@
 ﻿namespace mars_rover;
 public static class Input
 {
-    public static string GetInput()
+    public static string GetInput(string prompt)
     {
-        string? input = "";
+        string? input;
         do
         {
-            Console.Write("Input Rover instructions: ");
+            Console.Write(prompt);
             input = Console.ReadLine();
-            Console.WriteLine();
         }
         while (string.IsNullOrEmpty(input));
 
@@ -18,18 +17,19 @@ public static class Input
     public static bool TryParseInput(string input, out ParsedInput parsedInput)
     {
         string[] inputArray = input.Split(' ');
-        bool isInstrucitons = TryParseInstruction(inputArray, out Instruction[]? instructions);
-        bool isPosition = TryParsePosition(inputArray, out Position? position);
-        bool isPlateauSize = TryParsePlateauSize(inputArray, out PlateauSize? plateauSize);
+        bool isInstrucitons = TryParseInstructions(input, out Instruction[]? instructions);
+        bool isPosition = TryParsePosition(input, out Position? position);
+        bool isPlateauSize = TryParsePlateauSize(input, out PlateauSize? plateauSize);
 
         parsedInput = new ParsedInput(instructions, position, plateauSize);
 
         return isInstrucitons || isPosition || isPlateauSize;
     }
 
-    private static bool TryParseInstruction(string[] inputArray, out Instruction[]? instructions)
+    public static bool TryParseInstructions(string input, out Instruction[] instructions)
     {
-        instructions = null;
+        instructions = new Instruction[0];
+        string[] inputArray = input.Split(' ');
         if (inputArray.Length != 1) return false;
         string validCharacters = "MLR";
         if (!inputArray[0].All(x => validCharacters.Contains(x))) return false;
@@ -55,9 +55,10 @@ public static class Input
         return instruction;
     }
 
-    private static bool TryParsePosition(string[] inputArray, out Position? position)
+    public static bool TryParsePosition(string input, out Position position)
     {
-        position = null;
+        string[] inputArray = input.Split(' ');
+        position = new Position(0,0,CardinalDirection.North);
         if (inputArray.Length != 3) return false;
         if (!int.TryParse(inputArray[0], out int x)) return false;
         if (!int.TryParse(inputArray[1], out int y)) return false;
@@ -68,9 +69,10 @@ public static class Input
         return true;
     }
 
-    private static bool TryParsePlateauSize(string[] inputArray, out PlateauSize? plateauSize)
+    public static bool TryParsePlateauSize(string input, out PlateauSize plateauSize)
     {
-        plateauSize = null;
+        string[] inputArray = input.Split(' ');
+        plateauSize = new(0,0);
         if(inputArray.Length != 2) return false;
         if (!int.TryParse(inputArray[0], out int length)) return false;
         if (!int.TryParse(inputArray[1], out int width)) return false;

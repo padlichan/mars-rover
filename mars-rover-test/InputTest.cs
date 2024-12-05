@@ -17,7 +17,8 @@ public class InputTest
         Console.SetIn(stringReader);
 
         //Act
-        string result = Input.GetInput();
+        Predicate<string> isValid = (x) => true;
+        string result = Input.GetInput("");
 
         //Assert
         result.Should().Be(expectedResult);
@@ -32,9 +33,9 @@ public class InputTest
         // Arrange
         var simulatedInput = "\n\nM\n";
         var expectedOutput =
-            $"Input Rover instructions: {Environment.NewLine}" +
-            $"Input Rover instructions: {Environment.NewLine}" +
-            $"Input Rover instructions: {Environment.NewLine}";
+            $"Input Rover instructions: " +
+            $"Input Rover instructions: " +
+            $"Input Rover instructions: ";
 
         var expectedResult = "M";
 
@@ -48,7 +49,7 @@ public class InputTest
         var stringWriter = new StringWriter();
         Console.SetOut(stringWriter);
 
-        var result = Input.GetInput();
+        var result = Input.GetInput("Input Rover instructions: ");
 
         // Assert
         result.Should().Be(expectedResult);
@@ -60,14 +61,14 @@ public class InputTest
         Console.SetIn(originalIn);
     }
     [Test]
-    public void ParseInput_ReturnCorrectForValidPosition()
+    public void ParsePlateauSize_ReturnTrueAndCorrectForValidPlateauSize()
     {
         //Arrange
-        string input = "1 2 N";
-        var expectedResult = new ParsedInput(null, new Position(1, 2, CardinalDirection.North), null);
+        string input = "2 5";
+        var expectedResult = new PlateauSize(2, 5);
 
         //Act
-        bool isSuccess = Input.TryParseInput(input, out ParsedInput result);
+        bool isSuccess = Input.TryParsePlateauSize(input, out PlateauSize result);
 
         //Assert
         isSuccess.Should().BeTrue();
@@ -75,14 +76,33 @@ public class InputTest
     }
 
     [Test]
-    public void ParseInput_ReturnCorrectForValidPlateauSize()
+    [TestCase("0 0")]
+    [TestCase("-1 0")]
+    [TestCase("-1 -1")]
+    [TestCase(" ")]
+    [TestCase("ASDFGHJKL")]
+    public void ParsePlateauSize_ReturnFalseForInvalidPlateauSize(string input)
     {
         //Arrange
-        string input = "5 5";
-        var expectedResult = new ParsedInput(null, null, new PlateauSize(5, 5));
 
         //Act
-        bool isSuccess = Input.TryParseInput(input, out ParsedInput result);
+        bool result = Input.TryParsePlateauSize(input, out PlateauSize p);
+
+        //Assert
+        result.Should().BeFalse();
+    }
+
+
+
+    [Test]
+    public void TryParsePosition_ReturnTrueAndCorrectForValidPosition()
+    {
+        //Arrange
+        string input = "5 5 S";
+        var expectedResult = new Position(5,5, CardinalDirection.South);
+
+        //Act
+        var isSuccess = Input.TryParsePosition(input, out Position result);
 
         //Assert
         isSuccess.Should().BeTrue();
@@ -90,11 +110,29 @@ public class InputTest
     }
 
     [Test]
-    public void ParseInput_ReturnCorrectForValidInstructions()
+    [TestCase("-1 -1")]
+    [TestCase("asdfghjkl")]
+    [TestCase(" ")]
+    [TestCase("-1 5")]
+    [TestCase("5 -1")]
+
+    public void TryParsePosition_ReturnFalseForInvalidPosition(string input)
+    {
+        //Arrange
+
+        //Act
+        var result = Input.TryParsePosition(input, out Position p);
+
+        //Assert
+        result.Should().BeFalse();
+    }
+
+    [Test]
+    public void TryParseInstructions_ReturnCorrectForValidInstructions()
     {
         //Arrange
         string input = "LMRMM";
-        Instruction[] instructions =
+        Instruction[] expectedResult =
         {
             Instruction.TurnLeft,
             Instruction.Move,
@@ -102,10 +140,10 @@ public class InputTest
             Instruction.Move,
             Instruction.Move
         };
-        var expectedResult = new ParsedInput(instructions, null, null);
+        
 
         //Act
-        bool isSuccess = Input.TryParseInput(input, out ParsedInput result);
+        bool isSuccess = Input.TryParseInstructions(input, out Instruction[] result);
 
         //Assert
         isSuccess.Should().BeTrue();
@@ -120,19 +158,16 @@ public class InputTest
     [TestCase("P")]
     [TestCase(" ")]
     [TestCase("MLMRMR R")]
-    [TestCase("5.2 5.4")]
-    [TestCase("-2 -2")]
-    [TestCase("-2 -2 E")]
-    public void ParseInput_ReturnFalseAndNullForInvalidInput(string input)
+    [TestCase("mlrmlm")]
+
+    public void TryParseInstructions_ReturnFalseForInvalidInput(string input)
     {
         //Arrange
-        var expectedResult = new ParsedInput(null, null, null);
 
         //Act
-        bool isSuccess = Input.TryParseInput(input, out ParsedInput result);
+        bool isSuccess = Input.TryParseInput(input, out ParsedInput p);
 
         //Assert
-        result.Should().BeEquivalentTo(expectedResult);
         isSuccess.Should().BeFalse();
     }
 }
