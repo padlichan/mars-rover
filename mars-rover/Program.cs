@@ -1,9 +1,11 @@
 ﻿namespace mars_rover;
 
+
 internal class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
+        string input = Input.GetInput();
+        Console.WriteLine(input);
     }
 }
