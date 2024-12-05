@@ -1,4 +1,4 @@
-﻿namespace mars_rover;
+﻿namespace mars_rover.InputHandlers;
 public static class Input
 {
     public static string GetInput(string prompt)

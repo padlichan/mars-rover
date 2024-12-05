@@ -1,4 +1,6 @@
 ﻿namespace mars_rover;
+using mars_rover.RoverHandlers;
+using mars_rover.InputHandlers;
 
 
 internal class Program
@@ -12,9 +14,10 @@ internal class Program
         do
         {
             plateauInput = Input.GetInput("Enter plateau size (e.g. 5 5): ");
-
         }
         while (!Input.TryParsePlateauSize(plateauInput, out plateau));
+        Console.WriteLine("Creating grid... SUCCESS");
+
         //Prompt user to input starting position
         string positionInput;
         Position position;
@@ -22,16 +25,19 @@ internal class Program
         {
             positionInput = Input.GetInput("Enter starting position (e.g. 0 0 E):");
         }
-        while(!Input.TryParsePosition(positionInput, out position));
-        Console.WriteLine("Delivering rover...SUCCESS");
+        while (!Input.TryParsePosition(positionInput, out position));
+        Console.WriteLine("Delivering rover to starting position...SUCCESS");
+        Rover rover = new Rover(position);
+
         //Prompt user for instructions
         string instructionsInput;
         Instruction[] instructions;
-
         do
         {
             instructionsInput = Input.GetInput("Enter rover instructions (e.g. LMMRMMR: ");
-        }while(!Input.TryParseInstructions(instructionsInput, out instructions));
+        } 
+        while (!Input.TryParseInstructions(instructionsInput, out instructions));
+        rover.PerformInstructions(instructions);
         Console.WriteLine("Performing instructions... SUCCESS");
     }
 }

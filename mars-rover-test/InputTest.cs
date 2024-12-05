@@ -1,5 +1,5 @@
 using FluentAssertions;
-using mars_rover;
+using mars_rover.InputHandlers;
 namespace mars_rover_test;
 
 public class InputTest
