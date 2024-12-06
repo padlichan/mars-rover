@@ -8,6 +8,6 @@ public class Position(int x, int y, CardinalDirection direction)
 
     public override string ToString()
     {
-        return $"{X} {Y}, facing {Facing}";
+        return $"{X} {Y}, {Facing}";
     }
 }

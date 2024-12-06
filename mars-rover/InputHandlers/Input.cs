@@ -2,7 +2,7 @@
 namespace mars_rover.InputHandlers;
 public static class Input
 {
-    public static string GetInput(string prompt)
+    public static string GetValidInput(string prompt)
     {
         string? input;
         do
@@ -47,7 +47,7 @@ public static class Input
     public static bool TryParsePosition(string input, out Position position)
     {
         string[] inputArray = input.Split(' ');
-        position = new Position(0, 0, CardinalDirection.North);
+        position = new Position(0, 0, CardinalDirection.NORTH);
         if (inputArray.Length != 3) return false;
         if (!int.TryParse(inputArray[0], out int x)) return false;
         if (!int.TryParse(inputArray[1], out int y)) return false;
@@ -72,18 +72,32 @@ public static class Input
 
     private static bool TryParseCardinalDirection(char input, out CardinalDirection direction)
     {
-        direction = CardinalDirection.North;
+        direction = CardinalDirection.NORTH;
         string validValues = "NESW";
         if (!validValues.Contains(input)) return false;
         direction = input switch
         {
-            'N' => CardinalDirection.North,
-            'W' => CardinalDirection.West,
-            'S' => CardinalDirection.South,
-            'E' => CardinalDirection.East,
-            _ => CardinalDirection.North
+            'N' => CardinalDirection.NORTH,
+            'W' => CardinalDirection.WEST,
+            'S' => CardinalDirection.SOUTH,
+            'E' => CardinalDirection.EAST,
+            _ => CardinalDirection.NORTH
         };
         return true;
+    }
+
+    public static bool TryParseMenuChoice(string input, out MenuChoice choice)
+    {
+        choice = MenuChoice.DEFAULT;
+        if (input.Length != 1) return false;
+        switch (input[0])
+        {
+            case 'A': choice = MenuChoice.ADD_ROVER; return true;
+            case 'R': choice = MenuChoice.REMOVE_ROVER; return true;
+            case 'L': choice = MenuChoice.LIST_ROVERS; return true;
+            case 'Q': choice = MenuChoice.QUIT; return true;
+            default: choice = MenuChoice.DEFAULT; return false;
+        };
     }
 
 }

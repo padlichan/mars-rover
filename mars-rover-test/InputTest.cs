@@ -19,7 +19,7 @@ public class InputTest
 
         //Act
         Predicate<string> isValid = (x) => true;
-        string result = Input.GetInput("");
+        string result = Input.GetValidInput("");
 
         //Assert
         result.Should().Be(expectedResult);
@@ -50,7 +50,7 @@ public class InputTest
         var stringWriter = new StringWriter();
         Console.SetOut(stringWriter);
 
-        var result = Input.GetInput("Input Rover instructions: ");
+        var result = Input.GetValidInput("Input Rover instructions: ");
 
         // Assert
         result.Should().Be(expectedResult);
@@ -100,7 +100,7 @@ public class InputTest
     {
         //Arrange
         string input = "5 5 S";
-        var expectedResult = new Position(5,5, CardinalDirection.South);
+        var expectedResult = new Position(5,5, CardinalDirection.SOUTH);
 
         //Act
         var isSuccess = Input.TryParsePosition(input, out Position result);

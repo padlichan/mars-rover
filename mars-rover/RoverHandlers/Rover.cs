@@ -8,13 +8,14 @@ public class Rover : IMappable
 {
 
     public Position CurrentPosition { get; private set; } 
-    private Grid Grid { get; set; } 
     private MissionControl missionControl { get; set; }
 
-    public Rover(Position startingPosition, Grid grid)
+    public string Name { get; private set; }
+
+    public Rover(Position startingPosition, string name)
     {
         CurrentPosition = startingPosition;
-        Grid = grid;
+        Name = name;
         missionControl = MissionControl.GetInstance();
     }
 
@@ -39,28 +40,27 @@ public class Rover : IMappable
         Position oldPosition = new Position(CurrentPosition.X, CurrentPosition.Y, CurrentPosition.Facing);
         CurrentPosition = nextPosition;
         missionControl.UpdateRoverPosition(this, oldPosition);
-        Console.WriteLine($"Current position: {CurrentPosition}");
         return true;
     }
     private Position Turn(Position position, Instruction instruction)
     {
         switch (position.Facing)
         {
-            case CardinalDirection.North:
-                if (instruction == Instruction.TurnLeft) position.Facing = CardinalDirection.West;
-                else position.Facing = CardinalDirection.East;
+            case CardinalDirection.NORTH:
+                if (instruction == Instruction.TurnLeft) position.Facing = CardinalDirection.WEST;
+                else position.Facing = CardinalDirection.EAST;
                 break;
-            case CardinalDirection.East:
-                if (instruction == Instruction.TurnLeft) position.Facing = CardinalDirection.North;
-                else position.Facing = CardinalDirection.South;
+            case CardinalDirection.EAST:
+                if (instruction == Instruction.TurnLeft) position.Facing = CardinalDirection.NORTH;
+                else position.Facing = CardinalDirection.SOUTH;
                 break;
-            case CardinalDirection.South:
-                if (instruction == Instruction.TurnLeft) position.Facing = CardinalDirection.East;
-                else position.Facing = CardinalDirection.West;
+            case CardinalDirection.SOUTH:
+                if (instruction == Instruction.TurnLeft) position.Facing = CardinalDirection.EAST;
+                else position.Facing = CardinalDirection.WEST;
                 break;
-            case CardinalDirection.West:
-                if (instruction == Instruction.TurnLeft) position.Facing = CardinalDirection.South;
-                else position.Facing = CardinalDirection.North;
+            case CardinalDirection.WEST:
+                if (instruction == Instruction.TurnLeft) position.Facing = CardinalDirection.SOUTH;
+                else position.Facing = CardinalDirection.NORTH;
                 break;
         }
         return position;
@@ -70,19 +70,19 @@ public class Rover : IMappable
     {
         switch (position.Facing)
         {
-            case CardinalDirection.North:
+            case CardinalDirection.NORTH:
                 position.Y++;
                 break;
 
-            case CardinalDirection.South:
+            case CardinalDirection.SOUTH:
                 position.Y--;
                 break;
 
-            case CardinalDirection.East:
+            case CardinalDirection.EAST:
                 position.X++;
                 break;
 
-            case CardinalDirection.West:
+            case CardinalDirection.WEST:
                 position.X--;
                 break;
         }; return position;
