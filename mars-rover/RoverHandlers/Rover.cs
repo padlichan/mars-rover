@@ -1,12 +1,22 @@
 ﻿using mars_rover.InputHandlers;
-using System.ComponentModel.Design;
+using mars_rover.Grids;
+using mars_rover.UI;
+
 namespace mars_rover.RoverHandlers;
 
-public class Rover(Position startingPosition, Grid grid)
+public class Rover : IMappable
 {
 
-    public Position CurrentPosition { get; private set; } = startingPosition;
-    private Grid Grid { get; set; } = grid;
+    public Position CurrentPosition { get; private set; } 
+    private Grid Grid { get; set; } 
+    private ConsoleUI ui;
+
+    public Rover(Position startingPosition, Grid grid)
+    {
+        CurrentPosition = startingPosition;
+        Grid = grid;
+        ui = ConsoleUI.GetInstance();
+    }
 
     public bool PerformInstructions(Instruction[] instructions)
     {
@@ -18,7 +28,7 @@ public class Rover(Position startingPosition, Grid grid)
                 nextPosition = MoveForward(nextPosition);
                 if (!CheckPosition(nextPosition))
                 {
-                    DrawRover();
+                    ui.DrawGrid(Grid, this);
                     return false;
                 }
             }
@@ -29,7 +39,7 @@ public class Rover(Position startingPosition, Grid grid)
         }
         CurrentPosition = nextPosition;
         Console.WriteLine("Current position: " + GetCurrentPosition());
-        DrawRover();
+        ui.DrawGrid(Grid, this);
         return true;
     }
     private Position Turn(Position position, Instruction instruction)
@@ -86,29 +96,5 @@ public class Rover(Position startingPosition, Grid grid)
     public string GetCurrentPosition()
     {
         return $"{CurrentPosition.X} {CurrentPosition.Y} {CurrentPosition.Facing}";
-    }
-
-    public void DrawRover()
-    {
-        char c = CurrentPosition.Facing switch
-        {
-            CardinalDirection.North => '^',
-            CardinalDirection.East => '>',
-            CardinalDirection.South => 'v',
-            CardinalDirection.West => '<',
-            _ => ' '
-
-        };
-        for (int i = Grid.Length - 1; i >= 0; i--)
-        {
-            for (int j = 0; j < Grid.Width; j++)
-            {
-                if (i == CurrentPosition.Y && j == CurrentPosition.X) Console.Write(c);
-                else Console.Write('_');
-                Console.Write(' ');
-            }
-            Console.WriteLine();
-        }
-        Console.WriteLine();
     }
 }

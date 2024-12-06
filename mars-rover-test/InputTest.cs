@@ -1,4 +1,6 @@
 using FluentAssertions;
+using mars_rover.Grid;
+using mars_rover.Grids;
 using mars_rover.InputHandlers;
 namespace mars_rover_test;
 
@@ -68,7 +70,7 @@ public class InputTest
         var expectedResult = new Grid(2, 5);
 
         //Act
-        bool isSuccess = Input.TryParsePlateauSize(input, out Grid result);
+        bool isSuccess = Input.TryParseGrid(input, out Grid result);
 
         //Assert
         isSuccess.Should().BeTrue();
@@ -86,7 +88,7 @@ public class InputTest
         //Arrange
 
         //Act
-        bool result = Input.TryParsePlateauSize(input, out Grid p);
+        bool result = Input.TryParseGrid(input, out Grid p);
 
         //Assert
         result.Should().BeFalse();
@@ -169,5 +171,5 @@ public class InputTest
 
         //Assert
         isSuccess.Should().BeFalse();
-    }
+    } 
 }
