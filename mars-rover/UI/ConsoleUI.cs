@@ -16,38 +16,38 @@ namespace mars_rover.UI
             return instance;    
         }
 
-        public void PromptInput()
-        {
-
-        }
-
         public void DisplayMessage(string message)
         {
             Console.WriteLine(message);
         }
 
-        public void DrawGrid(Grid grid, Rover rover)
+        public void DrawGrid(Grid grid)
         {
-            char c = rover.CurrentPosition.Facing switch
-            {
-                CardinalDirection.North => '^',
-                CardinalDirection.East => '>',
-                CardinalDirection.South => 'v',
-                CardinalDirection.West => '<',
-                _ => ' '
-
-            };
             for (int i = grid.Length - 1; i >= 0; i--)
             {
                 for (int j = 0; j < grid.Width; j++)
                 {
-                    if (i == rover.CurrentPosition.Y && j == rover.CurrentPosition.X) Console.Write(c);
+                    if (grid.Map[j,i] != null) Console.Write(directionToSymbol(grid.Map[j,i].CurrentPosition.Facing));
                     else Console.Write('_');
                     Console.Write(' ');
                 }
                 Console.WriteLine();
             }
             Console.WriteLine();
+        }
+
+        public string directionToSymbol(CardinalDirection direction) 
+        {
+            string symbol = direction switch
+            {
+                CardinalDirection.North => "^",
+                CardinalDirection.East => ">",
+                CardinalDirection.South => "v",
+                CardinalDirection.West => "<",
+                _ => ""
+
+            };
+            return symbol;
         }
     }
 }

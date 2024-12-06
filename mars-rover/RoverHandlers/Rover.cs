@@ -9,11 +9,13 @@ public class Rover : IMappable
 
     public Position CurrentPosition { get; private set; } 
     private Grid Grid { get; set; } 
+    private MissionControl missionControl { get; set; }
 
     public Rover(Position startingPosition, Grid grid)
     {
         CurrentPosition = startingPosition;
         Grid = grid;
+        missionControl = MissionControl.GetInstance();
     }
 
     public bool PerformInstructions(Instruction[] instructions)
@@ -24,7 +26,7 @@ public class Rover : IMappable
             if (instruction == Instruction.Move)
             {
                 nextPosition = moveForward(nextPosition);
-                if (!Grid.CheckPosition(nextPosition).Item1)
+                if (!missionControl.CheckPosition(nextPosition))
                 {
                     return false;
                 }
@@ -34,7 +36,9 @@ public class Rover : IMappable
                 nextPosition = Turn(nextPosition, instruction);
             }
         }
+        Position oldPosition = new Position(CurrentPosition.X, CurrentPosition.Y, CurrentPosition.Facing);
         CurrentPosition = nextPosition;
+        missionControl.UpdateRoverPosition(this, oldPosition);
         Console.WriteLine($"Current position: {CurrentPosition}");
         return true;
     }
