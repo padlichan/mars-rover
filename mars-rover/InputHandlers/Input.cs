@@ -96,6 +96,7 @@ public static class Input
             case 'R': choice = MenuChoice.REMOVE_ROVER; return true;
             case 'L': choice = MenuChoice.LIST_ROVERS; return true;
             case 'Q': choice = MenuChoice.QUIT; return true;
+            case 'C': choice = MenuChoice.CONTROL_ROVER; return true;
             default: choice = MenuChoice.DEFAULT; return false;
         };
     }

@@ -15,7 +15,7 @@ public static class MainMenu
             MenuChoice choice;
             do
             {
-                input = Input.GetValidInput("A: Add rover, R: Remove rover, L: List rovers, Q: Quit\n");
+                input = Input.GetValidInput("A: Add rover, R: Remove rover, L: List rovers, C: Control Rover, Q: Quit\n");
             }
             while (!Input.TryParseMenuChoice(input, out choice));
 
@@ -25,6 +25,8 @@ public static class MainMenu
                 case MenuChoice.ADD_ROVER: missionControl.AddRover(); break;
                 case MenuChoice.REMOVE_ROVER: missionControl.RemoveRover(); break;
                 case MenuChoice.LIST_ROVERS: missionControl.ListRovers(); break;
+                case MenuChoice.CONTROL_ROVER: missionControl.ControlRover(); break;
+
             }
         }
         while (true);
@@ -37,5 +39,6 @@ public enum MenuChoice
     ADD_ROVER,
     REMOVE_ROVER,
     LIST_ROVERS,
+    CONTROL_ROVER,
     DEFAULT
 }

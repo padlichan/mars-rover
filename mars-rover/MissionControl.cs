@@ -10,9 +10,8 @@ namespace mars_rover;
 public class MissionControl
 {
     private static MissionControl? instance;
-    private Grid? grid;
+    private Grid grid;
     private List<Rover> rovers;
-    private Rover? rover;
     private MissionControl()
     {
         rovers = [];
@@ -40,7 +39,7 @@ public class MissionControl
 
         string name = SetRoverName();
 
-        rover = AddRoverAtPosition(startingPosition, name);
+        Rover rover = AddRoverAtPosition(startingPosition, name);
 
         ControlRover();
 
@@ -48,7 +47,7 @@ public class MissionControl
 
     private Rover AddRoverAtPosition(Position position, string name)
     {
-        rover = new Rover(position, name);
+        Rover rover = new Rover(position, name);
         grid.Add(rover);
         ConsoleUI.DisplayMessage("Delivering rover to starting position...SUCCESS");
         rovers.Add(rover);
@@ -64,7 +63,7 @@ public class MissionControl
 
     public bool CheckPosition(Position position)
     {
-        ConsoleUI.DisplayMessage("Checking grid position...");
+        ConsoleUI.DisplayMessageNoBreak("Checking grid position...");
         if (grid != null)
         {
             (bool, GridCheckOutcome) outcome = grid.CheckPosition(position);
@@ -86,7 +85,7 @@ public class MissionControl
         return name;
     }
 
-    private Grid SetMissionArea()
+    private static Grid SetMissionArea()
     {
         Grid missionArea;
         string gridInput;
@@ -111,7 +110,7 @@ public class MissionControl
         return position;
     }
 
-    private void ControlRover()
+    private void ControlRover(Rover rover)
     {
         do
         {
@@ -131,17 +130,17 @@ public class MissionControl
         Instruction[] instructions;
         do
         {
-            instructionsInput = Input.GetValidInput("Enter valid rover instructions (e.g. LMMRMMR) OR Back to Menu (B): ");
+            instructionsInput = Input.GetValidInput("Enter valid instructions (e.g. LMMRMMR) OR Back to Menu (B): ");
             if (instructionsInput == "B") return null;
         }
         while (!Input.TryParseInstructions(instructionsInput, out instructions));
         return instructions;
     }
 
-    private bool SendInstructions(Rover rover, Instruction[] instructions)
+    private static bool SendInstructions(Rover rover, Instruction[] instructions)
     {
         bool isSuccess = rover.PerformInstructions(instructions);
-        Console.WriteLine($"{rover.Name}: {rover.CurrentPosition}");
+        //Console.WriteLine($"{rover.Name}: {rover.CurrentPosition}");
         return isSuccess;
     }
 
@@ -173,13 +172,14 @@ public class MissionControl
         {
             ConsoleUI.DisplayMessage($"{rover.Name} - {rover.CurrentPosition}");
         }
-        ConsoleUI.DrawGrid(grid);
     }
 
     public void RemoveRover()
     {
         if (!HasAvailableRover()) return;
-        Rover rover = ChooseRover();
+        Rover rover;
+        if (rovers.Count == 1) rover = rovers[0];
+        else rover = ChooseRover();
         rovers.Remove(rover);
         grid.Remove(rover.CurrentPosition);
         ConsoleUI.DisplayMessage($"{rover.Name} removed");
@@ -193,5 +193,15 @@ public class MissionControl
             return false;
         }
         return true;
+    }
+
+    public void ControlRover()
+    {
+        if (!HasAvailableRover()) return;
+        Rover rover;
+        if (rovers.Count == 1) rover = rovers[0];
+        else rover = ChooseRover();
+        ConsoleUI.DisplayMessage($"Controlling {rover.Name}");
+        ControlRover(rover);
     }
 }
