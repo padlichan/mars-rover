@@ -36,7 +36,7 @@ namespace mars_rover
 
             Position startingPosition = PickStartingPosition();
 
-            AddRoverAtPosition(startingPosition);
+            rover = AddRoverAtPosition(startingPosition);
             ui.DisplayMessage("Delivering rover to starting position...SUCCESS");
             ui.DrawGrid(grid, rover);
 
@@ -47,16 +47,16 @@ namespace mars_rover
                 bool hasPerformedInstructions = SendInstructions(rover, instructions);
                 if (hasPerformedInstructions) ui.DisplayMessage("Performing instructions... SUCCESS");
                 else ui.DisplayMessage("Performing instructions... FAIL");
+                ui.DrawGrid(grid, rover);
             }
             while (true);
         }
 
-        public bool AddRoverAtPosition(Position position)
+        public Rover AddRoverAtPosition(Position position)
         {
-            if (grid == null) return false;
             rover = new Rover(position, grid);
             grid.Add(rover, position);
-            return true;
+            return rover;
         }
 
         public bool CheckPosition(Position position)

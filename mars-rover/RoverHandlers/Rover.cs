@@ -9,13 +9,11 @@ public class Rover : IMappable
 
     public Position CurrentPosition { get; private set; } 
     private Grid Grid { get; set; } 
-    private ConsoleUI ui;
 
     public Rover(Position startingPosition, Grid grid)
     {
         CurrentPosition = startingPosition;
         Grid = grid;
-        ui = ConsoleUI.GetInstance();
     }
 
     public bool PerformInstructions(Instruction[] instructions)
@@ -25,10 +23,9 @@ public class Rover : IMappable
         {
             if (instruction == Instruction.Move)
             {
-                nextPosition = MoveForward(nextPosition);
-                if (!CheckPosition(nextPosition))
+                nextPosition = moveForward(nextPosition);
+                if (!Grid.CheckPosition(nextPosition).Item1)
                 {
-                    ui.DrawGrid(Grid, this);
                     return false;
                 }
             }
@@ -38,8 +35,7 @@ public class Rover : IMappable
             }
         }
         CurrentPosition = nextPosition;
-        Console.WriteLine("Current position: " + GetCurrentPosition());
-        ui.DrawGrid(Grid, this);
+        Console.WriteLine($"Current position: {CurrentPosition}");
         return true;
     }
     private Position Turn(Position position, Instruction instruction)
@@ -66,13 +62,7 @@ public class Rover : IMappable
         return position;
     }
 
-    private bool CheckPosition(Position position)
-    {
-        if (position.X < 0 || position.X >= Grid.Width || position.Y < 0 || position.Y >= Grid.Length) return false;
-        return true;
-    }
-
-    private Position MoveForward(Position position)
+    private Position moveForward(Position position)
     {
         switch (position.Facing)
         {
@@ -92,9 +82,5 @@ public class Rover : IMappable
                 position.X--;
                 break;
         }; return position;
-    }
-    public string GetCurrentPosition()
-    {
-        return $"{CurrentPosition.X} {CurrentPosition.Y} {CurrentPosition.Facing}";
     }
 }
